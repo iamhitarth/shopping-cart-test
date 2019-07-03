@@ -1,0 +1,30 @@
+﻿<Properties StartupConfiguration="{07603C1F-02BA-4DC6-834B-22DA94F56C2F}|Default">
+  <MonoDevelop.Ide.ItemProperties.HitarthShoppingCartAPI PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="HitarthShoppingCartAPI/Startup.cs">
+    <Files>
+      <File FileName="HitarthShoppingCartAPI/Controllers/ProductsController.cs" Line="44" Column="9" />
+      <File FileName="HitarthShoppingCartAPI/Dtos/ProductDto.cs" Line="8" Column="19" />
+      <File FileName="HitarthShoppingCartAPI/Startup.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="HitarthShoppingCartAPI" expanded="True">
+            <Node name="HitarthShoppingCartAPI" expanded="True">
+              <Node name="Controllers" expanded="True" />
+              <Node name="Dtos" expanded="True" />
+              <Node name="Properties" expanded="True" />
+              <Node name="Startup.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
