@@ -8,27 +8,39 @@ type Product = {
 }
 
 type AppState = {
-  products: Array<Product>
+  products: Array<Product>;
+  added: Array<string>;
 }
 
 class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props)
-    this.state = { products: [] };
+    this.state = { products: [], added: [] };
   }
 
   componentDidMount() {
     fetch('https://localhost:5001/api/products')
     .then(response => response.json())
-    .then(results => {
-      console.log('Results are', results)
-      this.setState({ products: results })
+    .then(products => {
+      this.setState({ products })
     })
   }
 
-  render() {
-    const { products } = this.state
+  addProduct = (productId: string) => {
+    const { added } = this.state
+    if (!added.includes(productId)) {
+      this.setState({
+        ...this.state,
+        added: [...added, productId] 
+      })
+    }
+  }
 
+  render() {
+    const { products, added } = this.state
+    
+    console.log('Added products', added)
+    
     return (
       <div className="App">
         <h1>Products</h1>
@@ -36,7 +48,7 @@ class App extends React.Component<{}, AppState> {
         {
           products.map(product => (
             <li key={product.id}>
-              {product.name} {product.price}
+              <span>{product.name} {product.price}</span>{' '}<input type="button" value="Add" onClick={() => this.addProduct(product.id)}/>
             </li>
           ))
         }
