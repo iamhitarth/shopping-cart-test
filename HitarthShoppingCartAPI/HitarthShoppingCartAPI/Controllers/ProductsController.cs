@@ -8,25 +8,21 @@ namespace HitarthShoppingCartAPI.Controllers
   [ApiController]
   public class ProductsController : ControllerBase
   {
-    // GET api/products
-    [HttpGet]
-    public ActionResult<IEnumerable<ProductDto>> Get()
-    {
-      return new ProductDto[] {
+    List<ProductDto> _products = new List<ProductDto> {
         new ProductDto{
           Id = "1",
           Name = "Coffee",
-          Price = 5.50m
+          Price = 15.50m
         },
         new ProductDto {
           Id = "2",
           Name = "Milk",
-          Price = 7.50m
+          Price = 17.50m
         },
         new ProductDto {
           Id = "3",
           Name = "Sugar",
-          Price = 4
+          Price = 14
         },
         new ProductDto {
           Id = "4",
@@ -36,15 +32,36 @@ namespace HitarthShoppingCartAPI.Controllers
         new ProductDto {
           Id = "5",
           Name = "Chocolate",
-          Price = 2.50m
+          Price = 12.50m
         }
       };
+
+    // GET api/products
+    [HttpGet]
+    public ActionResult<IEnumerable<ProductDto>> Get()
+    {
+      return _products;
     }
 
     // POST api/products
     [HttpPost]
     public void Post([FromBody] List<ProductDto> products)
     {
+    }
+
+    // POST api/products/getShippingCost
+    [HttpPost("getShippingCost")]
+    public decimal GetShippingCost([FromBody] List<string> productIds)
+    {
+      decimal totalProductsCost = 0;
+
+      productIds.ForEach(productId =>
+      {
+        var currentProduct = _products.Find(product => product.Id == productId);
+        totalProductsCost = totalProductsCost + currentProduct.Price;
+      });
+
+      return totalProductsCost < 50 ? 10 : 20;
     }
   }
 }
