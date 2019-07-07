@@ -44,29 +44,34 @@ class App extends React.Component<{}, AppState> {
     })
   }
 
+  renderProductsList = (products: Array<Product>) => {
+    return (
+      <ul>
+        {
+          products.map(product => (
+            <li key={product.id}>
+              <span>{product.name} {product.price}</span>{' '}<input type="button" value="Add" onClick={() => this.addProduct(product.id)}/>
+            </li>
+          ))
+        }
+      </ul>
+    )
+  }
+
   render() {
     const { products, added, isBasketShown } = this.state
-    
-    console.log('Added products', added)
     
     return (
       <div className="App">
         {!isBasketShown ? (<>
           <h1>Products</h1>
-          {<ul>
-          {
-            products.map(product => (
-              <li key={product.id}>
-                <span>{product.name} {product.price}</span>{' '}<input type="button" value="Add" onClick={() => this.addProduct(product.id)}/>
-              </li>
-            ))
-          }
-          </ul>}
+          {this.renderProductsList(products)}
           <input type="button" value="Go to basket" onClick={() => this.toggleBasket()} />
         </>)
         :
         (<>
           <h1>Basket</h1>
+          {this.renderProductsList(products.filter(product => added.includes(product.id)))}
           <input type="button" value="Go back to products" onClick={() => this.toggleBasket()} />
         </>)
         }
