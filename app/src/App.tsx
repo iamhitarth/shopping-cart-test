@@ -10,12 +10,13 @@ type Product = {
 type AppState = {
   products: Array<Product>;
   added: Array<string>;
+  isBasketShown: boolean;
 }
 
 class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props)
-    this.state = { products: [], added: [] };
+    this.state = { products: [], added: [], isBasketShown: false };
   }
 
   componentDidMount() {
@@ -36,23 +37,39 @@ class App extends React.Component<{}, AppState> {
     }
   }
 
+  toggleBasket = () => {
+    this.setState({
+      ...this.state,
+      isBasketShown: !this.state.isBasketShown
+    })
+  }
+
   render() {
-    const { products, added } = this.state
+    const { products, added, isBasketShown } = this.state
     
     console.log('Added products', added)
     
     return (
       <div className="App">
-        <h1>Products</h1>
-        {<ul>
-        {
-          products.map(product => (
-            <li key={product.id}>
-              <span>{product.name} {product.price}</span>{' '}<input type="button" value="Add" onClick={() => this.addProduct(product.id)}/>
-            </li>
-          ))
+        {!isBasketShown ? (<>
+          <h1>Products</h1>
+          {<ul>
+          {
+            products.map(product => (
+              <li key={product.id}>
+                <span>{product.name} {product.price}</span>{' '}<input type="button" value="Add" onClick={() => this.addProduct(product.id)}/>
+              </li>
+            ))
+          }
+          </ul>}
+          <input type="button" value="Go to basket" onClick={() => this.toggleBasket()} />
+        </>)
+        :
+        (<>
+          <h1>Basket</h1>
+          <input type="button" value="Go back to products" onClick={() => this.toggleBasket()} />
+        </>)
         }
-        </ul>}
       </div>
     );
   }
