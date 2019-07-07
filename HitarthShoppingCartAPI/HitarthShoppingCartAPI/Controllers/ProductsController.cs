@@ -53,6 +53,8 @@ namespace HitarthShoppingCartAPI.Controllers
     [HttpPost("getShippingCost")]
     public decimal GetShippingCost([FromBody] List<string> productIds)
     {
+      if(productIds.Count == 0) { return 0; }
+
       decimal totalProductsCost = 0;
 
       productIds.ForEach(productId =>

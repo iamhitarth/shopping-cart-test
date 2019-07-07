@@ -1,6 +1,21 @@
 import * as React from 'react';
 import './App.css';
 
+const get = (url: string) => {
+  return fetch(url).then(response => response.json())
+}
+
+const post = (url: string, data: any) => {
+  return fetch(url, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  }).then(response => response.json())
+}
+
 type Product = {
   id: string;
   name: string;
@@ -11,21 +26,25 @@ type AppState = {
   products: Array<Product>;
   basket: Array<string>;
   isBasketShown: boolean;
+  shippingCost: number;
 }
 
 class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props)
-    this.state = { products: [], basket: [], isBasketShown: false };
+    this.state = { products: [], basket: [], isBasketShown: false, shippingCost: 0 };
   }
 
   componentDidMount() {
-    fetch('https://localhost:5001/api/products')
-    .then(response => response.json())
+    get('https://localhost:5001/api/products')
     .then(products => {
       this.setState({ products })
     })
   }
+
+  fetchShippingCost = (productIds: Array<string>) => 
+    post('https://localhost:5001/api/products/getShippingCost', productIds)
+    .then(shippingCost => this.setShippingCost(shippingCost))
 
   addProduct = (productId: string) => {
     const { basket } = this.state
@@ -33,7 +52,7 @@ class App extends React.Component<{}, AppState> {
       this.setState({
         ...this.state,
         basket: [...basket, productId] 
-      })
+      }, () => this.fetchShippingCost(this.state.basket))
     }
   }
 
@@ -43,8 +62,15 @@ class App extends React.Component<{}, AppState> {
       this.setState({
         ...this.state,
         basket: basket.filter(id => id !== productId)
-      })
+      }, () => this.fetchShippingCost(this.state.basket))
     }
+  }
+
+  setShippingCost = (shippingCost: number) => {
+    this.setState({
+      ...this.state,
+      shippingCost
+    })
   }
 
   toggleBasket = () => {
@@ -71,8 +97,8 @@ class App extends React.Component<{}, AppState> {
   }
 
   render() {
-    const { products, basket, isBasketShown } = this.state
-    console.log(basket)
+    const { products, basket, isBasketShown, shippingCost } = this.state
+    console.log(basket, shippingCost)
     return (
       <div className="App">
         {!isBasketShown ? 
