@@ -9,14 +9,14 @@ type Product = {
 
 type AppState = {
   products: Array<Product>;
-  added: Array<string>;
+  basket: Array<string>;
   isBasketShown: boolean;
 }
 
 class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props)
-    this.state = { products: [], added: [], isBasketShown: false };
+    this.state = { products: [], basket: [], isBasketShown: false };
   }
 
   componentDidMount() {
@@ -28,11 +28,21 @@ class App extends React.Component<{}, AppState> {
   }
 
   addProduct = (productId: string) => {
-    const { added } = this.state
-    if (!added.includes(productId)) {
+    const { basket } = this.state
+    if (!basket.includes(productId)) {
       this.setState({
         ...this.state,
-        added: [...added, productId] 
+        basket: [...basket, productId] 
+      })
+    }
+  }
+
+  removeProduct = (productId: string) => {
+    const { basket } = this.state
+    if (basket.includes(productId)) {
+      this.setState({
+        ...this.state,
+        basket: basket.filter(id => id !== productId)
       })
     }
   }
@@ -50,7 +60,9 @@ class App extends React.Component<{}, AppState> {
         {
           products.map(product => (
             <li key={product.id}>
-              <span>{product.name} {product.price}</span>{' '}<input type="button" value="Add" onClick={() => this.addProduct(product.id)}/>
+              <span>{product.name} {product.price}</span>{' '}
+              <input type="button" value="+" onClick={() => this.addProduct(product.id)}/>
+              <input type="button" value="-" onClick={() => this.removeProduct(product.id)}/>
             </li>
           ))
         }
@@ -59,19 +71,20 @@ class App extends React.Component<{}, AppState> {
   }
 
   render() {
-    const { products, added, isBasketShown } = this.state
-    
+    const { products, basket, isBasketShown } = this.state
+    console.log(basket)
     return (
       <div className="App">
-        {!isBasketShown ? (<>
-          <h1>Products</h1>
-          {this.renderProductsList(products)}
-          <input type="button" value="Go to basket" onClick={() => this.toggleBasket()} />
-        </>)
+        {!isBasketShown ? 
+          (<>
+            <h1>Products</h1>
+            {this.renderProductsList(products)}
+            <input type="button" value="Go to basket" onClick={() => this.toggleBasket()} />
+          </>)
         :
         (<>
           <h1>Basket</h1>
-          {this.renderProductsList(products.filter(product => added.includes(product.id)))}
+          {this.renderProductsList(products.filter(product => basket.includes(product.id)))}
           <input type="button" value="Go back to products" onClick={() => this.toggleBasket()} />
         </>)
         }
