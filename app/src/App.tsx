@@ -27,12 +27,13 @@ type AppState = {
   basket: Array<string>;
   isBasketShown: boolean;
   shippingCost: number;
+  isOrderPlaced: boolean;
 }
 
 class App extends React.Component<{}, AppState> {
   constructor(props: {}) {
     super(props)
-    this.state = { products: [], basket: [], isBasketShown: false, shippingCost: 0 };
+    this.state = { products: [], basket: [], isBasketShown: false, shippingCost: 0, isOrderPlaced: false };
   }
 
   componentDidMount() {
@@ -48,7 +49,7 @@ class App extends React.Component<{}, AppState> {
 
   placeOrder = (productIds: Array<string>) => 
     post('https://localhost:5001/api/products/order', productIds)
-    .then(response => console.log('Placed order', response))
+    .then(response => this.setOrderPlaced())
 
   addProduct = (productId: string) => {
     const { basket } = this.state
@@ -77,6 +78,14 @@ class App extends React.Component<{}, AppState> {
     })
   }
 
+  setOrderPlaced = () => {
+    this.setState({
+      ...this.state,
+      isBasketShown: false,
+      isOrderPlaced: true
+    })
+  }
+
   toggleBasket = () => {
     this.setState({
       ...this.state,
@@ -101,16 +110,16 @@ class App extends React.Component<{}, AppState> {
   }
 
   render() {
-    const { products, basket, isBasketShown, shippingCost } = this.state
+    const { products, basket, isBasketShown, shippingCost, isOrderPlaced } = this.state
     console.log(basket, shippingCost)
     return (
       <div className="App">
         {!isBasketShown ? 
-          (<>
+          !isOrderPlaced ? (<>
             <h1>Products</h1>
             {this.renderProductsList(products)}
             <input type="button" value="Go to basket" onClick={() => this.toggleBasket()} />
-          </>)
+          </>) : <h1>Thank you for your order.</h1>
         :
         (<>
           <h1>Basket</h1>
