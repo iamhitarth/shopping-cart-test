@@ -97,37 +97,58 @@ class App extends React.Component<{}, AppState> {
     return (
       <ul>
         {
-          products.map(product => (
-            <li key={product.id}>
-              <span>{product.name} {product.price}</span>{' '}
-              <input type="button" value="+" onClick={() => this.addProduct(product.id)}/>
-              <input type="button" value="-" onClick={() => this.removeProduct(product.id)}/>
-            </li>
-          ))
+          products.map(product => {
+            const isSelected = this.state.basket.includes(product.id)
+            return (
+              <li key={product.id}>
+                <span>{product.name} - {product.price}</span>{' '}
+                {
+                  !isSelected ? 
+                    <input type="button" value="Add" onClick={() => this.addProduct(product.id)}/> : 
+                    <input type="button" value="Remove" onClick={() => this.removeProduct(product.id)}/>
+                }
+              </li>
+            )
+          })
         }
       </ul>
     )
   }
 
+  renderProductsView = (products: Array<Product>) => (<>
+    <h1>Products</h1>
+    {this.renderProductsList(products)}
+    <input type="button" value="Go to basket" onClick={() => this.toggleBasket()} />
+  </>)
+
+  renderBasketView = (selectedProductIds: Array<string>) => {
+    const { products, shippingCost } = this.state
+    const selectedProducts = products.filter(product => selectedProductIds.includes(product.id))
+    let totalProductsCost = 0;
+    selectedProducts.forEach(product => totalProductsCost += product.price)
+
+    return (
+      <>
+        <h1>Basket</h1>
+        {this.renderProductsList(selectedProducts)}
+        <div>Shipping cost - ${shippingCost}</div>
+        <div>Total cost - ${shippingCost + totalProductsCost}</div>
+        <input type="button" value="Go back to products" onClick={() => this.toggleBasket()} />
+        <input type="button" value="Place order" onClick={() => this.placeOrder(selectedProductIds)} />
+      </>
+    )
+  }
+
   render() {
-    const { products, basket, isBasketShown, shippingCost, isOrderPlaced } = this.state
-    console.log(basket, shippingCost)
+    const { products, basket, isBasketShown, isOrderPlaced } = this.state
+    
     return (
       <div className="App">
         {!isBasketShown ? 
-          !isOrderPlaced ? (<>
-            <h1>Products</h1>
-            {this.renderProductsList(products)}
-            <input type="button" value="Go to basket" onClick={() => this.toggleBasket()} />
-          </>) : <h1>Thank you for your order.</h1>
+          !isOrderPlaced ? 
+            this.renderProductsView(products) : <h1>Thank you for your order.</h1>
         :
-        (<>
-          <h1>Basket</h1>
-          {this.renderProductsList(products.filter(product => basket.includes(product.id)))}
-          <div>Shipping cost ${shippingCost}</div>
-          <input type="button" value="Go back to products" onClick={() => this.toggleBasket()} />
-          <input type="button" value="Place order" onClick={() => this.placeOrder(basket)} />
-        </>)
+        this.renderBasketView(basket)
         }
       </div>
     );
