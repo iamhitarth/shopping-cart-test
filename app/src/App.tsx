@@ -46,6 +46,10 @@ class App extends React.Component<{}, AppState> {
     post('https://localhost:5001/api/products/getShippingCost', productIds)
     .then(shippingCost => this.setShippingCost(shippingCost))
 
+  placeOrder = (productIds: Array<string>) => 
+    post('https://localhost:5001/api/products/order', productIds)
+    .then(response => console.log('Placed order', response))
+
   addProduct = (productId: string) => {
     const { basket } = this.state
     if (!basket.includes(productId)) {
@@ -113,6 +117,7 @@ class App extends React.Component<{}, AppState> {
           {this.renderProductsList(products.filter(product => basket.includes(product.id)))}
           <div>Shipping cost ${shippingCost}</div>
           <input type="button" value="Go back to products" onClick={() => this.toggleBasket()} />
+          <input type="button" value="Place order" onClick={() => this.placeOrder(basket)} />
         </>)
         }
       </div>

@@ -43,10 +43,11 @@ namespace HitarthShoppingCartAPI.Controllers
       return _products;
     }
 
-    // POST api/products
-    [HttpPost]
-    public void Post([FromBody] List<ProductDto> products)
+    // POST api/products/order
+    [HttpPost("order")]
+    public ActionResult Post([FromBody] List<string> productIds)
     {
+      return new OkObjectResult(productIds);
     }
 
     // POST api/products/getShippingCost
