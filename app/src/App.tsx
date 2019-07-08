@@ -111,6 +111,7 @@ class App extends React.Component<{}, AppState> {
         (<>
           <h1>Basket</h1>
           {this.renderProductsList(products.filter(product => basket.includes(product.id)))}
+          <div>Shipping cost ${shippingCost}</div>
           <input type="button" value="Go back to products" onClick={() => this.toggleBasket()} />
         </>)
         }
